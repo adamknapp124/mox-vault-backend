@@ -14,11 +14,6 @@ const db = mysql.createPool({
 	database: 'mox_vault',
 });
 
-app.post('/migrate-data', (req, res) => {
-	const cardData = req.body;
-	console.log(cardData);
-});
-
 app.post('/sendIt', async (req, res) => {
 	try {
 		const card = req.body;
@@ -88,6 +83,7 @@ app.post('/sendIt', async (req, res) => {
 	}
 });
 
+// Get collection total
 app.get('/collection/total', async (req, res) => {
 	try {
 		const [collectionData] = await db.query('SELECT quantity, price FROM collection');
@@ -100,6 +96,18 @@ app.get('/collection/total', async (req, res) => {
 	} catch (error) {
 		console.log('Error:', error);
 		res.status(500).json({ error: 'Internal Server Error' });
+	}
+});
+
+// Get card collection
+app.get('/my-collection', async (req, res) => {
+	try {
+		const [cards] = await db.query('SELECT * FROM collection');
+
+		res.status(200).json({ cards });
+	} catch (error) {
+		console.error('Error: ', error);
+		res.status(500).json({ error: 'Database Error' });
 	}
 });
 
